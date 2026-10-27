@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="PW-ADAPT — an adaptive, human-supervised produced-water treatment proof of concept.">
+<title>PW-ADAPT | Interactive Project Proposal</title>
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="PW-ADAPT home"><span class="brand-mark">PW</span><span>PW-ADAPT<small>ADAPTIVE PRODUCED-WATER SYSTEM</small></span></a>
+  <nav aria-label="Main navigation">
+    <a href="#live-simulation">Live simulation</a><a href="#challenge">Challenge</a><a href="#system">System</a><a href="#proposal">Solution</a><a href="#validation">Validation</a><a href="#roadmap">Roadmap</a>
+  </nav>
+  <div class="header-actions"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch color theme">☼ Light mode</button><a class="top-cta" href="#funding">Funding case <span>↗</span></a></div>
+</header>
+<main id="top">
+<section class="hero hero-standalone">
+  <!-- Top Prototype Control & Status Bar -->
+  <div class="prototype-hud">
+    <div class="hud-left">
+      <div class="prototype-title">
+        <span class="rig-badge">PW-ADAPT INTERACTIVE PROTOTYPE</span>
+        <span class="status-pill status-idle" id="rig-status-pill"><span class="status-dot-pulse"></span> <b id="rig-status-text">IDLE</b></span>
+      </div>
+      <div class="hud-meta">3-STAGE ADAPTIVE TREATMENT PROTOTYPE · INTERACTIVE DEMO SIMULATION</div>
+    </div>
+
+    <!-- Live Telemetry Quick KPI Ticker -->
+    <div class="hud-kpis">
+      <div class="kpi-box"><span class="kpi-label">OIL IN</span><b class="kpi-val" id="kpi-oil">120 <small>mg/L</small></b></div>
+      <div class="kpi-box"><span class="kpi-label">TURBIDITY</span><b class="kpi-val" id="kpi-turb">82 <small>NTU</small></b></div>
+      <div class="kpi-box"><span class="kpi-label">SALINITY</span><b class="kpi-val" id="kpi-ec">85.0 <small>mS/cm</small></b></div>
+      <div class="kpi-box"><span class="kpi-label">PRESSURE</span><b class="kpi-val" id="kpi-press">180 <small>kPa</small></b></div>
+      <div class="kpi-box"><span class="kpi-label">FLOW</span><b class="kpi-val" id="kpi-flow">1.8 <small>L/min</small></b></div>
+    </div>
+
+    <!-- Mode Selector & Live Action Triggers -->
+    <div class="hud-actions">
+      <div class="mode-switch-wrap">
+        <button type="button" class="mode-btn active" id="btn-mode-demo" title="Interactive browser-based scenario simulation">Demo Simulation</button>
+        <button type="button" class="mode-btn" id="btn-mode-hardware" title="Hardware link mode (available in connected bench test environments)">Hardware Link Mode</button>
+      </div>
+      <div class="scenario-buttons">
+        <button type="button" class="action-btn run-btn" id="btn-action-start" title="Approve route and start run">▶ Run Rig</button>
+        <button type="button" class="action-btn fault-btn" id="btn-action-overpressure" title="Inject overpressure fault (>280 kPa)">⚠ Overpressure</button>
+        <button type="button" class="action-btn estop-btn" id="btn-action-estop" title="Trigger Emergency Stop">🛑 E-Stop</button>
+        <button type="button" class="action-btn reset-btn" id="btn-action-reset" title="Reset system state">↻ Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The Standalone SVG Prototype Rig Container -->
+  <div class="hero-visual standalone-rig-visual">
+    <div id="hero-canvas" class="standalone-canvas" aria-label="Interactive PW-ADAPT 3-tank physical treatment prototype"></div>
+    <div class="hero-model-hint">
+      <span>◉ CLICK ANY COMPONENT TO INSPECT READINGS &amp; SAFETY</span> · 
+      <span>↻ DRAG TO ROTATE · SCROLL TO ZOOM</span>
+    </div>
+  </div>
+</section>
+
+<!-- Component Detail Inspection Modal -->
+<div class="component-modal-backdrop" id="component-modal-backdrop" hidden>
+  <div class="component-modal" id="component-modal" role="dialog" aria-modal="true" aria-labelledby="modal-comp-name">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <span class="modal-comp-tag" id="modal-comp-id">TK-01-RAW</span>
+        <h3 id="modal-comp-name">Raw Water Tank</h3>
+      </div>
+      <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Close component inspection">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-status-strip">
+        <span>CURRENT STATUS:</span> <b class="modal-status-badge" id="modal-comp-status">STANDBY / MONITORING</b>
+      </div>
+      <div class="modal-grid">
+        <div class="modal-section">
+          <h4>PURPOSE</h4>
+          <p id="modal-comp-purpose">Stores incoming untreated produced water from the oilfield separator and provides controlled side-stream feed.</p>
+        </div>
+        <div class="modal-section">
+          <h4>ROLE IN PW-ADAPT</h4>
+          <p id="modal-comp-role">Primary feed buffering and initial water quality baseline assessment before chemical or physical conditioning.</p>
+        </div>
+      </div>
+      <div class="modal-readings-box">
+        <h4>LIVE TELEMETRY READINGS</h4>
+        <div class="modal-readings-grid" id="modal-comp-readings">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+      <div class="modal-grid">
+        <div class="modal-section">
+          <h4>INPUT / OUTPUT CONNECTIONS</h4>
+          <p id="modal-comp-io">Inlet: Produced Water Line (wellhead) · Outlet: Feed Pump Suction via Valve V1.</p>
+        </div>
+        <div class="modal-section">
+          <h4>SAFETY CONDITIONS &amp; INTERLOCKS</h4>
+          <p id="modal-comp-safety" class="safety-text">Dry-run protection float switch trips pump if level &lt; 10%. Overpressure relief at 280 kPa.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<section class="section live-section" id="live-simulation">
+  <div class="section-head"><div><div class="eyebrow">LIVE PROCESS SIMULATION</div><h2>Run the workflow, not just the presentation.</h2></div><p>Interactive browser-based process model: choose feed conditions, inspect the recommended route, approve it, run the simulated rig and inject faults to observe the safe-state logic.</p></div>
+  <div class="simulation-frame-wrap"><div class="simulation-frame-head"><span><i></i> PW-ADAPT · SIMULATION ENVIRONMENT</span><a href="simulation.html#sim" target="_blank" rel="noopener">Open in a separate tab ↗</a></div><iframe title="PW-ADAPT live process simulation" src="simulation.html#sim" loading="lazy" allow="fullscreen"></iframe></div>
+  <p class="simulation-disclaimer">Simulation only — no physical hardware is connected. Model efficiencies and risk scores are illustrative placeholders until calibrated with bench and laboratory data.</p>
+</section>
+
+<section class="trust-strip">
+  <div><span class="strip-icon">◈</span><span><b>Modular by design</b><small>Adapt the route to measured water characteristics</small></span></div>
+  <div><span class="strip-icon">⌁</span><span><b>Human-in-the-loop</b><small>Recommendations are reviewed before actuation</small></span></div>
+  <div><span class="strip-icon">✓</span><span><b>Verification-led</b><small>Post-treatment measurements inform the next step</small></span></div>
+</section>
+
+<section class="section" id="challenge">
+  <div class="section-head"><div><div class="eyebrow">01 / THE CHALLENGE</div><h2>Produced water is not a one-route problem.</h2></div><p>Water characteristics can vary by source and operating conditions. A treatment sequence that works for one sample or end use may not be the best choice for another.</p></div>
+  <div class="challenge-grid">
+    <article class="info-card"><span class="card-number">A</span><div class="card-icon">⌁</div><h3>Variable water quality</h3><p>Salinity, oil, suspended solids and other constituents can complicate treatment selection and monitoring.</p></article>
+    <article class="info-card"><span class="card-number">B</span><div class="card-icon">⤳</div><h3>Fixed routes have limits</h3><p>A modular approach can help compare candidate treatment routes against the intended end use and operating constraints.</p></article>
+    <article class="info-card"><span class="card-number">C</span><div class="card-icon">◎</div><h3>Proof matters</h3><p>Sensor readings and model outputs must be checked against laboratory evidence before performance claims are made.</p></article>
+  </div>
+</section>
+
+<section class="section system-section" id="system">
+  <div class="section-head"><div><div class="eyebrow">02 / INTERACTIVE ENGINEERING MODEL</div><h2>Explore the concept rig.</h2></div><p>Select any highlighted component to inspect its role. Geometry is conceptual and intended to communicate the architecture—not serve as manufacturing CAD.</p></div>
+  <div class="system-layout">
+    <div class="model-panel">
+      <div class="model-toolbar"><span><i class="status-dot"></i> INTERACTIVE 3D ASSEMBLY</span><div><button id="reset-camera" class="small-btn">Reset view ↺</button><button id="toggle-labels" class="small-btn active">Labels</button></div></div>
+      <div id="system-canvas" aria-label="Interactive 3D assembly. Click a component to view its description."></div>
+      <div class="model-legend"><span><i class="legend-dot blue"></i> Water path</span><span><i class="legend-dot amber"></i> Treatment module</span><span><i class="legend-dot green"></i> Measurement / control</span></div>
+    </div>
+    <aside class="component-panel" aria-live="polite">
+      <div class="component-top"><span class="eyebrow">SELECTED COMPONENT</span><span class="component-index" id="component-index">01 / 10</span></div>
+      <div class="component-visual" id="component-icon">◉</div>
+      <h3 id="component-name">Raw-water tank</h3>
+      <p id="component-summary">Receives the incoming produced-water sample for controlled bench testing.</p>
+      <div class="spec-list">
+        <div><span>ROLE</span><b id="component-role">Feed storage</b></div>
+        <div><span>DESIGN STATUS</span><b id="component-status">Conceptual</b></div>
+        <div><span>SPECIFICATION</span><b id="component-spec">To be confirmed</b></div>
+      </div>
+      <div class="component-note"><span>ⓘ</span><p id="component-note">Final dimensions and wetted materials must be selected against the actual sample chemistry and safety review.</p></div>
+      <div class="component-nav"><button id="prev-component" class="small-btn">← Previous</button><button id="next-component" class="small-btn">Next →</button></div>
+    </aside>
+  </div>
+  <div class="process-bar"><div class="process-title"><span class="eyebrow">SYSTEM LOGIC</span><h3>One closed-loop workflow.</h3></div><div class="process-steps"><div><span>01</span><b>Sense</b><small>Characterise feed</small></div><i>→</i><div><span>02</span><b>Decide</b><small>Assess candidate routes</small></div><i>→</i><div><span>03</span><b>Treat</b><small>Execute approved route</small></div><i>→</i><div><span>04</span><b>Verify</b><small>Check outlet quality</small></div><i>→</i><div><span>05</span><b>Re-plan</b><small>Update if needed</small></div></div></div>
+</section>
+
+<section class="section" id="proposal">
+  <div class="section-head"><div><div class="eyebrow">03 / THE PROPOSED SOLUTION</div><h2>Decision support, connected to physical treatment.</h2></div><p>The concept separates analytics and recommendations from low-level actuation, while keeping operator approval and independent local safety measures in the loop.</p></div>
+  <div class="architecture">
+    <div class="arch-card"><span class="arch-step">01</span><div class="arch-icon">⌁</div><h3>Sense</h3><p>Collect selected inlet measurements and record sample context.</p><small>INPUT: SENSOR + LAB DATA</small></div>
+    <div class="arch-connector">→</div>
+    <div class="arch-card"><span class="arch-step">02</span><div class="arch-icon">◈</div><h3>Assess & recommend</h3><p>Estimate risk and compare candidate routes against constraints.</p><small>OUTPUT: EXPLAINABLE ADVICE</small></div>
+    <div class="arch-connector">→</div>
+    <div class="arch-card"><span class="arch-step">03</span><div class="arch-icon">⏵</div><h3>Approve & treat</h3><p>An operator reviews the proposed route before execution.</p><small>OUTPUT: APPROVED COMMAND</small></div>
+    <div class="arch-connector">→</div>
+    <div class="arch-card"><span class="arch-step">04</span><div class="arch-icon">✓</div><h3>Verify & learn</h3><p>Compare outlet readings with targets and laboratory evidence.</p><small>OUTPUT: VERIFIED RECORD</small></div>
+  </div>
+  <div class="callout"><span class="callout-mark">!</span><div><b>Safety boundary</b><p>The prototype is not safety-rated industrial equipment. Hardware interlocks, containment, compatible wetted materials, supervised operation and an approved disposal route are prerequisites for real-water testing.</p></div></div>
+</section>
+
+<section class="section validation-section" id="validation">
+  <div class="section-head"><div><div class="eyebrow">04 / EVIDENCE BEFORE CLAIMS</div><h2>Validate the system—not just the interface.</h2></div><p>Success should be demonstrated with repeatable tests and evidence traceable to the relevant measurement method.</p></div>
+  <div class="validation-grid">
+    <div class="validation-main"><div class="eyebrow">VALIDATION SEQUENCE</div><div class="validation-row"><span>01</span><div><b>Bench-check sensors and actuators</b><p>Check calibration, response, wiring, valve/pump behaviour and safety interlocks.</p></div><span class="tag">FOUNDATION</span></div><div class="validation-row"><span>02</span><div><b>Test individual treatment modules</b><p>Record inlet/outlet measurements and operating conditions for each module.</p></div><span class="tag">MODULE TEST</span></div><div class="validation-row"><span>03</span><div><b>Run repeatable scenarios</b><p>Repeat defined scenarios, document variability and retain run logs.</p></div><span class="tag">REPEATABILITY</span></div><div class="validation-row"><span>04</span><div><b>Compare with laboratory results</b><p>Use approved sampling and lab methods to assess sensor and model performance.</p></div><span class="tag">EVIDENCE</span></div></div>
+    <aside class="evidence-card"><div class="eyebrow">EVIDENCE POLICY</div><div class="evidence-symbol">⌕</div><h3>No invented performance numbers.</h3><p>Efficiency, treated-water quality, energy use, operating cost and savings remain targets to measure—not guaranteed outcomes—until supported by documented tests.</p><div class="evidence-line"><span></span> Baseline → Test → Compare → Report</div></aside>
+  </div>
+</section>
+
+<section class="section roadmap-section" id="roadmap">
+  <div class="section-head"><div><div class="eyebrow">05 / EXECUTION ROADMAP</div><h2>Build evidence in controlled stages.</h2></div><p>Stage gates keep safety, sample access and validation readiness ahead of full integration.</p></div>
+  <div class="roadmap">
+    <div class="roadmap-item"><span class="roadmap-node">01</span><div class="roadmap-meta">GATE 1 · DEFINE</div><h3>Scope & safety readiness</h3><p>Confirm team roles, sample access, lab methods, sensor datasheets, safety controls and disposal route.</p><span class="deliverable">DELIVERABLE: APPROVED TEST PLAN</span></div>
+    <div class="roadmap-item"><span class="roadmap-node">02</span><div class="roadmap-meta">GATE 2 · BENCH</div><h3>Instrument & module checks</h3><p>Calibrate sensors, test actuators and interlocks, and establish baseline behaviour for individual modules.</p><span class="deliverable">DELIVERABLE: BENCH TEST LOGS</span></div>
+    <div class="roadmap-item"><span class="roadmap-node">03</span><div class="roadmap-meta">GATE 3 · INTEGRATE</div><h3>Close the loop</h3><p>Connect measurement, recommendation, human approval, actuation and post-treatment verification.</p><span class="deliverable">DELIVERABLE: INTEGRATED DEMONSTRATION</span></div>
+    <div class="roadmap-item"><span class="roadmap-node">04</span><div class="roadmap-meta">GATE 4 · VALIDATE</div><h3>Evaluate with evidence</h3><p>Run repeatable scenarios and, subject to approvals, real-water tests with laboratory comparison.</p><span class="deliverable">DELIVERABLE: VALIDATION REPORT</span></div>
+  </div>
+</section>
+
+<section class="funding-section" id="funding">
+  <div><div class="eyebrow">06 / THE FUNDING CASE</div><h2>Fund the evidence that moves the concept forward.</h2><p>Funding will support a safer, instrumented bench prototype and the experiments needed to assess whether adaptive route selection adds measurable value.</p></div>
+  <div class="funding-items"><div><span>01</span><b>Instrumentation & safety</b><small>Sensors, pumps, valves, containment and protective equipment</small></div><div><span>02</span><b>Prototype modules</b><small>Vessels, filtration media, fittings and replaceable components</small></div><div><span>03</span><b>Laboratory validation</b><small>Sample analysis, calibration standards and repeatable test runs</small></div><div><span>04</span><b>Integration & reporting</b><small>Control integration, data logging, evaluation and documentation</small></div></div>
+</section>
+
+<section class="section closing">
+  <div class="closing-mark">PW<span>·</span>ADAPT</div><h2>A measured path from concept to evidence.</h2><p>PW-ADAPT aims to demonstrate an explainable, human-supervised approach to choosing and verifying produced-water treatment routes—starting at bench scale, with safety and validation built into the plan.</p><a class="button primary" href="#top">Back to overview ↑</a>
+</section>
+</main>
+<footer><span>PW-ADAPT · Interactive project proposal</span><span>Concept model only · Not manufacturing CAD · Performance claims require validation</span></footer>
+<script defer src="assets/js/app.js"></script>
+</body>
+</html>

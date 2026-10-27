@@ -1,0 +1,1 @@
+This project loads Three.js and OrbitControls from jsDelivr at runtime and Google Fonts from fonts.googleapis.com. Review the relevant third-party licenses and connectivity requirements before external distribution. The project files authored for this proposal are provided as a working concept package; this is not legal advice.
